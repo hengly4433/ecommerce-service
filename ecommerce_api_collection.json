@@ -1,0 +1,658 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-16T17:34:00.000Z",
+  "__export_source": "chatgpt-insomnia-export-safe",
+  "resources": [
+    {
+      "_id": "wrk_ecommerce_api",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Ecommerce API (Safe)",
+      "description": "All endpoints mapped to your Spring Boot controllers",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_ecommerce_api",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8080",
+        "jwt": ""
+      }
+    },
+    {
+      "_id": "jar_default",
+      "_type": "cookie_jar",
+      "parentId": "wrk_ecommerce_api",
+      "name": "Default Jar",
+      "cookies": []
+    },
+    { "_id": "fld_auth", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Auth" },
+    { "_id": "fld_users", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Users" },
+    { "_id": "fld_roles", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Roles & Permissions" },
+    { "_id": "fld_categories", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Categories" },
+    { "_id": "fld_stores", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Stores" },
+    { "_id": "fld_customers", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Customers" },
+    { "_id": "fld_products", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Products" },
+    { "_id": "fld_inventory", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Inventory" },
+    { "_id": "fld_orders", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Orders" },
+    { "_id": "fld_purchases", "_type": "request_group", "parentId": "wrk_ecommerce_api", "name": "Purchases" },
+    {
+      "_id": "req_auth_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login",
+      "method": "POST",
+      "url": "{{ base_url }}/api/auth/login",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin#12345\"\n}" }
+    },
+    {
+      "_id": "req_auth_register",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Register",
+      "method": "POST",
+      "url": "{{ base_url }}/api/auth/register",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"new.user@example.com\",\n  \"password\": \"Str0ng!Passw0rd\",\n  \"fullName\": \"New User\",\n  \"roleCodes\": [\"ADMIN\",\"SELLER\"]\n}" }
+    },
+    {
+      "_id": "req_auth_logout",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Logout",
+      "method": "POST",
+      "url": "{{ base_url }}/api/auth/logout",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_auth_verify_request",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Verify Email - Request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/auth/verify-email/request",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"new.user@example.com\"\n}" }
+    },
+    {
+      "_id": "req_auth_verify_confirm",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Verify Email - Confirm",
+      "method": "POST",
+      "url": "{{ base_url }}/api/auth/verify-email/confirm",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"new.user@example.com\",\n  \"code\": \"123456\"\n}" }
+    },
+    {
+      "_id": "req_auth_pwreset_request",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Password Reset - Request",
+      "method": "POST",
+      "url": "{{ base_url }}/api/auth/password-reset/request",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"new.user@example.com\"\n}" }
+    },
+    {
+      "_id": "req_auth_pwreset_confirm",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Password Reset - Confirm",
+      "method": "POST",
+      "url": "{{ base_url }}/api/auth/password-reset/confirm",
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"new.user@example.com\",\n  \"code\": \"654321\",\n  \"newPassword\": \"NewStr0ng!Pass\"\n}" }
+    },
+    {
+      "_id": "req_users_list",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "List Users",
+      "method": "GET",
+      "url": "{{ base_url }}/api/users",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "20" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_users_get",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "Get User by ID",
+      "method": "GET",
+      "url": "{{ base_url }}/api/users/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_users_create",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "Create User",
+      "method": "POST",
+      "url": "{{ base_url }}/api/users",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ jwt }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": { "mimeType": "application/json", "text": "{\n  \"email\": \"staff1@example.com\",\n  \"password\": \"Str0ng!Pass\",\n  \"fullName\": \"Staff One\",\n  \"roleCodes\": [\"SELLER\",\"WAREHOUSE\"],\n  \"enabled\": true,\n  \"locked\": false\n}" }
+    },
+    {
+      "_id": "req_users_enable",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "Enable User",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/users/1/enabled",
+      "parameters": [{ "name": "value", "value": "true" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_users_lock",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "Lock User",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/users/1/locked",
+      "parameters": [{ "name": "value", "value": "false" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_users_delete",
+      "_type": "request",
+      "parentId": "fld_users",
+      "name": "Delete User",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/users/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_roles_list",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "List Roles",
+      "method": "GET",
+      "url": "{{ base_url }}/api/roles",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "20" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_roles_get",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "Get Role",
+      "method": "GET",
+      "url": "{{ base_url }}/api/roles/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_roles_create",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "Create Role",
+      "method": "POST",
+      "url": "{{ base_url }}/api/roles",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ jwt }}" },
+        { "name": "Content-Type", "value": "application/x-www-form-urlencoded" }
+      ],
+      "body": { "mimeType": "application/x-www-form-urlencoded", "params": [
+        { "name": "code", "value": "ADMIN" },
+        { "name": "name", "value": "Administrator" },
+        { "name": "permissionCodes", "value": "PERM_USER_READ,PERM_USER_WRITE,PERM_ROLE_READ,PERM_ROLE_WRITE" }
+      ]}
+    },
+    {
+      "_id": "req_roles_update",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "Update Role Name",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/roles/1",
+      "parameters": [{ "name": "name", "value": "Operators" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_roles_set_perms",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "Set Role Permissions",
+      "method": "PUT",
+      "url": "{{ base_url }}/api/roles/1/permissions",
+      "parameters": [{ "name": "permissionCodes", "value": "PERM_USER_READ,PERM_ORDER_READ" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_roles_delete",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "Delete Role",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/roles/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+
+    {
+      "_id": "req_perms_list",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "List Permissions",
+      "method": "GET",
+      "url": "{{ base_url }}/api/permissions",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "50" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_perms_create",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "Create Permission",
+      "method": "POST",
+      "url": "{{ base_url }}/api/permissions",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ jwt }}" },
+        { "name": "Content-Type", "value": "application/x-www-form-urlencoded" }
+      ],
+      "body": { "mimeType": "application/x-www-form-urlencoded", "params": [
+        { "name": "code", "value": "PERM_PRODUCT_WRITE" },
+        { "name": "name", "value": "Product Write" }
+      ]}
+    },
+    {
+      "_id": "req_perms_delete",
+      "_type": "request",
+      "parentId": "fld_roles",
+      "name": "Delete Permission",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/permissions/10",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_cat_list",
+      "_type": "request",
+      "parentId": "fld_categories",
+      "name": "List Categories",
+      "method": "GET",
+      "url": "{{ base_url }}/api/categories",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "50" }]
+    },
+    {
+      "_id": "req_cat_get",
+      "_type": "request",
+      "parentId": "fld_categories",
+      "name": "Get Category",
+      "method": "GET",
+      "url": "{{ base_url }}/api/categories/1"
+    },
+    {
+      "_id": "req_cat_create",
+      "_type": "request",
+      "parentId": "fld_categories",
+      "name": "Create Category",
+      "method": "POST",
+      "url": "{{ base_url }}/api/categories",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ jwt }}" },
+        { "name": "Content-Type", "value": "application/x-www-form-urlencoded" }
+      ],
+      "body": { "mimeType": "application/x-www-form-urlencoded", "params": [
+        { "name": "parentId", "value": "" },
+        { "name": "name", "value": "Electronics" },
+        { "name": "slug", "value": "electronics" }
+      ]}
+    },
+    {
+      "_id": "req_cat_rename",
+      "_type": "request",
+      "parentId": "fld_categories",
+      "name": "Rename Category",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/categories/1",
+      "parameters": [{ "name": "name", "value": "Consumer Electronics" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_cat_delete",
+      "_type": "request",
+      "parentId": "fld_categories",
+      "name": "Delete Category",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/categories/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_store_list",
+      "_type": "request",
+      "parentId": "fld_stores",
+      "name": "List Stores",
+      "method": "GET",
+      "url": "{{ base_url }}/api/stores",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "50" }]
+    },
+    {
+      "_id": "req_store_get",
+      "_type": "request",
+      "parentId": "fld_stores",
+      "name": "Get Store",
+      "method": "GET",
+      "url": "{{ base_url }}/api/stores/1"
+    },
+    {
+      "_id": "req_store_create",
+      "_type": "request",
+      "parentId": "fld_stores",
+      "name": "Create Store",
+      "method": "POST",
+      "url": "{{ base_url }}/api/stores",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ jwt }}" },
+        { "name": "Content-Type", "value": "application/x-www-form-urlencoded" }
+      ],
+      "body": { "mimeType": "application/x-www-form-urlencoded", "params": [
+        { "name": "code", "value": "PPNOM" },
+        { "name": "name", "value": "Phnom Penh Flagship" },
+        { "name": "addressLine", "value": "123 Riverside" },
+        { "name": "city", "value": "Phnom Penh" },
+        { "name": "country", "value": "KH" }
+      ]}
+    },
+    {
+      "_id": "req_store_rename",
+      "_type": "request",
+      "parentId": "fld_stores",
+      "name": "Rename Store",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/stores/1",
+      "parameters": [{ "name": "name", "value": "PP Head Store" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_store_delete",
+      "_type": "request",
+      "parentId": "fld_stores",
+      "name": "Delete Store",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/stores/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_cust_list",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "List Customers",
+      "method": "GET",
+      "url": "{{ base_url }}/api/customers",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "50" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_cust_get",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "Get Customer",
+      "method": "GET",
+      "url": "{{ base_url }}/api/customers/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_cust_create",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "Create Customer",
+      "method": "POST",
+      "url": "{{ base_url }}/api/customers",
+      "parameters": [
+        { "name": "email", "value": "buyer@example.com" },
+        { "name": "fullName", "value": "Buyer One" },
+        { "name": "phone", "value": "+85512345678" },
+        { "name": "shippingAddress", "value": "Street 01, Phnom Penh" }
+      ],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_cust_update",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "Update Customer",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/customers/1",
+      "parameters": [
+        { "name": "fullName", "value": "Buyer One Updated" },
+        { "name": "phone", "value": "+85598765432" },
+        { "name": "shippingAddress", "value": "Street 02, Phnom Penh" }
+      ],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_cust_delete",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "Delete Customer",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/customers/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_prod_search",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "Search Products",
+      "method": "GET",
+      "url": "{{ base_url }}/api/products",
+      "parameters": [
+        { "name": "q", "value": "iphone" },
+        { "name": "categoryId", "value": "3" },
+        { "name": "page", "value": "0" },
+        { "name": "size", "value": "20" }
+      ]
+    },
+    {
+      "_id": "req_prod_get",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "Get Product",
+      "method": "GET",
+      "url": "{{ base_url }}/api/products/1"
+    },
+    {
+      "_id": "req_prod_create",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "Create Product",
+      "method": "POST",
+      "url": "{{ base_url }}/api/products",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ jwt }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": { "mimeType": "application/json", "text": "{\n  \"name\": \"iPhone 15 Pro\",\n  \"slug\": \"iphone-15-pro\",\n  \"sku\": \"IP15P-128-NT\",\n  \"description\": \"Latest iPhone 15 Pro 128GB\",\n  \"price\": \"1099.00\",\n  \"currency\": \"USD\",\n  \"categoryId\": 3,\n  \"storeId\": 1,\n  \"attributes\": {\n    \"color\": \"Natural Titanium\",\n    \"storage\": \"128GB\"\n  }\n}" }
+    },
+    {
+      "_id": "req_prod_main_image",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "Set Main Image (multipart)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/products/1/main-image",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }],
+      "body": { "mimeType": "multipart/form-data", "params": [
+        { "name": "file", "type": "file", "fileName": "/path/to/main.jpg" }
+      ]}
+    },
+    {
+      "_id": "req_prod_gallery",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "Add Gallery Images (multipart)",
+      "method": "POST",
+      "url": "{{ base_url }}/api/products/1/gallery",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }],
+      "body": { "mimeType": "multipart/form-data", "params": [
+        { "name": "files", "type": "file", "fileName": "/path/to/img1.jpg" },
+        { "name": "files", "type": "file", "fileName": "/path/to/img2.jpg" }
+      ]}
+    },
+    {
+      "_id": "req_prod_price",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "Update Price",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/products/1/price",
+      "parameters": [{ "name": "value", "value": "1199.00" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_prod_delete",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "Delete Product",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/products/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_inv_list",
+      "_type": "request",
+      "parentId": "fld_inventory",
+      "name": "List Inventory",
+      "method": "GET",
+      "url": "{{ base_url }}/api/inventory",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "50" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_inv_get",
+      "_type": "request",
+      "parentId": "fld_inventory",
+      "name": "Get Inventory Item",
+      "method": "GET",
+      "url": "{{ base_url }}/api/inventory/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_inv_adjust",
+      "_type": "request",
+      "parentId": "fld_inventory",
+      "name": "Adjust Stock",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/inventory/1/adjust",
+      "parameters": [{ "name": "delta", "value": "10" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_inv_threshold",
+      "_type": "request",
+      "parentId": "fld_inventory",
+      "name": "Set Minimum Threshold",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/inventory/1/threshold",
+      "parameters": [{ "name": "min", "value": "5" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_ord_list",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "List Orders",
+      "method": "GET",
+      "url": "{{ base_url }}/api/orders",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "20" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_ord_get",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "Get Order",
+      "method": "GET",
+      "url": "{{ base_url }}/api/orders/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_ord_create",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "Create Order",
+      "method": "POST",
+      "url": "{{ base_url }}/api/orders",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ jwt }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": { "mimeType": "application/json", "text": "{\n  \"customerId\": 1,\n  \"storeId\": 1,\n  \"currency\": \"USD\",\n  \"items\": [\n    { \"productId\": 101, \"quantity\": 2, \"unitPrice\": \"1099.00\" },\n    { \"productId\": 205, \"quantity\": 1, \"unitPrice\": \"49.90\" }\n  ],\n  \"shippingAddress\": \"Street 02, Phnom Penh\",\n  \"notes\": \"Handle with care\"\n}" }
+    },
+    {
+      "_id": "req_ord_paid",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "Mark Paid",
+      "method": "POST",
+      "url": "{{ base_url }}/api/orders/1/paid",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_ord_status",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "Update Status",
+      "method": "PATCH",
+      "url": "{{ base_url }}/api/orders/1/status",
+      "parameters": [{ "name": "status", "value": "SHIPPED" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_ord_delete",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "Delete Order",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/orders/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_pur_list",
+      "_type": "request",
+      "parentId": "fld_purchases",
+      "name": "List Purchases",
+      "method": "GET",
+      "url": "{{ base_url }}/api/purchases",
+      "parameters": [{ "name": "page", "value": "0" }, { "name": "size", "value": "20" }],
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_pur_get",
+      "_type": "request",
+      "parentId": "fld_purchases",
+      "name": "Get Purchase",
+      "method": "GET",
+      "url": "{{ base_url }}/api/purchases/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    },
+    {
+      "_id": "req_pur_create",
+      "_type": "request",
+      "parentId": "fld_purchases",
+      "name": "Create Purchase",
+      "method": "POST",
+      "url": "{{ base_url }}/api/purchases",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ jwt }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": { "mimeType": "application/json", "text": "{\n  \"supplierName\": \"Acme Supplies\",\n  \"storeId\": 1,\n  \"currency\": \"USD\",\n  \"items\": [\n    { \"productId\": 101, \"quantity\": 50, \"unitCost\": \"899.00\" },\n    { \"productId\": 205, \"quantity\": 200, \"unitCost\": \"30.00\" }\n  ],\n  \"reference\": \"PO-2025-0001\",\n  \"notes\": \"Priority replenishment\"\n}" }
+    },
+    {
+      "_id": "req_pur_delete",
+      "_type": "request",
+      "parentId": "fld_purchases",
+      "name": "Delete Purchase",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/purchases/1",
+      "headers": [{ "name": "Authorization", "value": "Bearer {{ jwt }}" }]
+    }
+  ]
+}

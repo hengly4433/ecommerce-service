@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+    image: ghcr.io/your-org/ecommerce-service:dev
+    container_name: ecommerce_app
+    ports:
+      - "8080:8080"
+    environment:
+      # DB (read from .env)
+      SPRING_DATASOURCE_URL: "${SPRING_DATASOURCE_URL}"
+      SPRING_DATASOURCE_USERNAME: "${SPRING_DATASOURCE_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${SPRING_DATASOURCE_PASSWORD}"
+
+      # Redis (from .env, with defaults)
+      SPRING_DATA_REDIS_HOST: "${SPRING_DATA_REDIS_HOST:-redis}"
+      SPRING_DATA_REDIS_PORT: "${SPRING_DATA_REDIS_PORT:-6379}"
+
+      # JWT config (from .env)
+      APP_SECURITY_JWT_ISSUER: "${APP_SECURITY_JWT_ISSUER:-ecommerce-service}"
+      APP_SECURITY_JWT_TTL_MINUTES: "${APP_SECURITY_JWT_TTL_MINUTES:-120}"
+      APP_SECURITY_JWT_BASE64_SECRET: "${APP_SECURITY_JWT_BASE64_SECRET}"
+
+    depends_on:
+      - redis
+
+    # Optional healthcheck (requires Actuator)
+    # healthcheck:
+    #   test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health | grep UP || exit 1"]
+    #   interval: 15s
+    #   timeout: 3s
+    #   retries: 5
+    #   start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: ecommerce_redis
+    ports:
+      - "6379:6379"
+
+  # Optional: Postgres container (enable with: docker compose --profile db up)
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["db"]
+    container_name: ecommerce_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-ecommerce}"
+      POSTGRES_USER: "${POSTGRES_USER:-ecommerce}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-change-me-strong}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}

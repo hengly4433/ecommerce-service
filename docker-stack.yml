@@ -1,0 +1,92 @@
+version: "3.9"
+
+x-env-common: &env_common
+  APP_SECURITY_JWT_ISSUER: "${APP_SECURITY_JWT_ISSUER:-ecommerce-service}"
+  APP_SECURITY_JWT_TTL_MINUTES: "${APP_SECURITY_JWT_TTL_MINUTES:-120}"
+  SPRING_DATA_REDIS_HOST: "redis"
+  SPRING_DATA_REDIS_PORT: "6379"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/ecommerce"
+  SPRING_DATASOURCE_USERNAME: "ecommerce"
+
+networks:
+  edge:
+    driver: overlay
+    attachable: true
+
+secrets:
+  db_password:
+    external: true
+  jwt_secret:
+    external: true
+
+volumes:
+  pgdata: {}
+
+services:
+  app:
+    image: ghcr.io/your-org/ecommerce-service:latest
+    networks: [edge]
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: ingress
+    environment:
+      <<: *env_common
+      # When using Swarm secrets, the entrypoint reads them into env at runtime.
+      # See docker/entrypoint.sh already in your repo.
+    secrets:
+      - source: db_password
+        target: db_password
+      - source: jwt_secret
+        target: jwt_secret
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health | grep UP || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    deploy:
+      mode: replicated
+      replicas: 2
+      update_config:
+        parallelism: 1
+        order: start-first
+        delay: 5s
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 20s
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  db:
+    image: postgres:16-alpine
+    networks: [edge]
+    environment:
+      POSTGRES_DB: "ecommerce"
+      POSTGRES_USER: "ecommerce"
+      # Password comes from secret (db_password)
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:7-alpine
+    networks: [edge]
+    deploy:
+      restart_policy:
+        condition: on-failure

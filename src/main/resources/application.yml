@@ -1,0 +1,149 @@
+spring:
+  # Make Spring read a local .env file if present (handy for ./mvnw runs)
+  config:
+    import: optional:file:.env[.properties]
+
+  application:
+    name: ecommerce-service
+
+  datasource:
+    # Safe defaults; override via .env, shell env, Compose, or Swarm
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/biti-ecommerce-db}
+    username: ${SPRING_DATASOURCE_USERNAME:blockcode}
+    password: ${SPRING_DATASOURCE_PASSWORD:Password@123}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 600000        # 10m
+      max-lifetime: 1800000       # 30m
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.format_sql: true
+      hibernate.jdbc.time_zone: UTC
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      repositories:
+        enabled: false   # we don’t use Redis repositories
+
+  # (Optional) SMTP. If unset, EmailService should log messages instead of sending.
+  mail:
+    host: ${SPRING_MAIL_HOST:}
+    port: ${SPRING_MAIL_PORT:}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: native
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+    # org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # (uncomment for SQL param binding)
+
+# Application config (with safe defaults so ./mvnw works even without env)
+app:
+  security:
+    jwt:
+      issuer: ${APP_SECURITY_JWT_ISSUER:ecommerce-service}
+      # Base64-encoded ≥32-byte secret. Override in env for real usage.
+      base64-secret: ${APP_SECURITY_JWT_BASE64_SECRET:c2VjcmV0LXNob3VsZC1iZS0zMi1ieXRlcy1iYXNlNjQ=}
+      ttl-minutes: ${APP_SECURITY_JWT_TTL_MINUTES:120}
+    ratelimit:
+      auth:
+        capacity: ${APP_SECURITY_RATELIMIT_AUTH_CAPACITY:10}
+        refill-seconds: ${APP_SECURITY_RATELIMIT_AUTH_REFILL_SECONDS:60}
+
+  auth:
+    email:
+      from: ${APP_AUTH_EMAIL_FROM:no-reply@local}
+    otp:
+      ttl-minutes: ${APP_AUTH_OTP_TTL_MINUTES:10}
+
+  storage:
+    gcs:
+      bucket: ${APP_STORAGE_GCS_BUCKET:your-firebase-storage-bucket.appspot.com}
+      public-url-prefix: ${APP_STORAGE_GCS_PUBLIC_URL_PREFIX:https://storage.googleapis.com}
+      # Dev only; prefer GOOGLE_APPLICATION_CREDENTIALS or workload identity in prod
+      credentials-json: ${APP_STORAGE_GCS_CREDENTIALS_JSON:}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger
+
+---
+# Profile: Docker Compose (compose.yml sets SPRING_PROFILES_ACTIVE=docker)
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+
+app:
+  security:
+    jwt:
+      issuer: ${APP_SECURITY_JWT_ISSUER:ecommerce-service}
+      base64-secret: ${APP_SECURITY_JWT_BASE64_SECRET}
+      ttl-minutes: ${APP_SECURITY_JWT_TTL_MINUTES:120}
+
+---
+# Profile: Docker Swarm (entrypoint reads secrets/env)
+spring:
+  config:
+    activate:
+      on-profile: swarm
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+
+app:
+  security:
+    jwt:
+      issuer: ${APP_SECURITY_JWT_ISSUER}
+      base64-secret: ${APP_SECURITY_JWT_BASE64_SECRET}
+      ttl-minutes: ${APP_SECURITY_JWT_TTL_MINUTES}

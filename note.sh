@@ -1,0 +1,1 @@
+# Provide the complete mapper of RoleMapper, PermissionMapper, CategoryMapper, InventoryMapper, CustomerMapper, StoreMapper, OrderMapper, PurchaseMapper code
